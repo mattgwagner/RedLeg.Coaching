@@ -27,7 +27,7 @@ namespace One_on_Ones
 
             var trello = await new TrelloFactory().Me(new TrelloAuthorization
             {
-                AppKey = "Wags-Test",
+                AppKey = configuration.GetValue<string>("Trello-App-Key"),
                 UserToken = configuration.GetValue<string>("Trello-Api-Key")
             });
 

@@ -5,5 +5,13 @@
 
 @foreach(var board in Model.Boards)
 {
-    <li>@board.Name</li>
+   <div>
+       <h2>@board.Name</h2>
+       <ul>
+           @foreach(var list in board.Lists)
+           {
+               <li>@list.Name</li>
+           }
+       </ul>
+   </div>
 }
