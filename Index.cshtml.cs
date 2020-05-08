@@ -13,6 +13,8 @@ namespace One_on_Ones
     {
         private readonly IConfiguration configuration;
 
+        public IBoardCollection Boards { get; private set; }
+
         public IndexModel(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -23,11 +25,13 @@ namespace One_on_Ones
             // Get an app key via https://trello.com/app-key
             // Then get a 'server token' since we are too lazy to bother with OAuth flow
 
-            var trello = new TrelloFactory().Me(new TrelloAuthorization
+            var trello = await new TrelloFactory().Me(new TrelloAuthorization
             {
                 AppKey = "Wags-Test",
-                UserToken = ""
+                UserToken = configuration.GetValue<string>("Trello-Api-Key")
             });
+
+            Boards = trello.Boards;
 
         }
     }
