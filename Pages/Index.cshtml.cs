@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Manatee.Trello;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace One_on_Ones
 {
@@ -36,10 +32,6 @@ namespace One_on_Ones
             var trello = await factory.Me(GetAuth());
 
             Boards = trello.Boards;
-
-
-
-
         }
     }
 }
