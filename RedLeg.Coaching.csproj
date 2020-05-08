@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>One_on_Ones</RootNamespace>
+    <RootNamespace>RedLeg.Coaching</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

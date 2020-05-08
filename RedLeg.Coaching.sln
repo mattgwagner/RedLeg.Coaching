@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "One-on-Ones", "One-on-Ones.csproj", "{24CCDFF3-FED7-46F4-B5A7-19FB5F2A21BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedLeg.Coaching", "RedLeg.Coaching.csproj", "{24CCDFF3-FED7-46F4-B5A7-19FB5F2A21BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
-namespace One_on_Ones
+namespace RedLeg.Coaching
 {
     public class IndexModel : PageModel
     {

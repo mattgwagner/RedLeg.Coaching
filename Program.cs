@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace One_on_Ones
+namespace RedLeg.Coaching
 {
     public class Program
     {
