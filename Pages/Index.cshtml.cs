@@ -1,37 +1,23 @@
 using Manatee.Trello;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace RedLeg.Coaching
 {
     public class IndexModel : PageModel
     {
-        private readonly IConfiguration configuration;
-
-        private TrelloAuthorization GetAuth() => new TrelloAuthorization
-        {
-            AppKey = configuration.GetValue<string>("Trello-App-Key"),
-            UserToken = configuration.GetValue<string>("Trello-Api-Key")
-        };
+        private readonly Task<IMe> me;
 
         public IBoardCollection Boards { get; private set; }
 
-        public IndexModel(IConfiguration configuration)
+        public IndexModel(Task<IMe> me)
         {
-            this.configuration = configuration;
+            this.me = me;
         }
 
         public async Task OnGet()
         {
-            // Get an app key via https://trello.com/app-key
-            // Then get a 'server token' since we are too lazy to bother with OAuth flow
-
-            var factory = new TrelloFactory();
-
-            var trello = await factory.Me(GetAuth());
-
-            Boards = trello.Boards;
+            Boards = (await me).Boards;
         }
     }
 }
