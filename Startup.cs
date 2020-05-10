@@ -15,8 +15,8 @@ namespace RedLeg.Coaching
             // Get an app key via https://trello.com/app-key
             // Then get a 'server token' since we are too lazy to bother with OAuth flow
 
-            TrelloAuthorization.Default.AppKey = configuration.GetValue<string>("Trello-App-Key");
-            TrelloAuthorization.Default.UserToken = configuration.GetValue<string>("Trello-Api-Key");
+            TrelloAuthorization.Default.AppKey = configuration.GetValue<string>("Trello_App_Key");
+            TrelloAuthorization.Default.UserToken = configuration.GetValue<string>("Trello_Api_Key");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
