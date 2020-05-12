@@ -10,7 +10,7 @@ namespace RedLeg.Coaching
     {
         private readonly Task<IMe> me;
 
-        public IDictionary<IBoard, IEnumerable<List>> Data { get; private set; } = new Dictionary<IBoard, IEnumerable<List>>();
+        public IDictionary<IBoard, IEnumerable<IList>> Data { get; private set; } = new Dictionary<IBoard, IEnumerable<IList>>();
 
         public IndexModel(Task<IMe> me)
         {
@@ -25,7 +25,9 @@ namespace RedLeg.Coaching
             {
                 if (board.IsClosed == true)
                 {
-                    Data.Add(board, Enumerable.Empty<List>());
+                    await board.Refresh();
+
+                    Data.Add(board, board.Lists.Select(list => list));
                 }
             }
         }
