@@ -20,14 +20,21 @@
             {
                 <h4>@card.Id - @card.Name</h4>
 
-                @foreach (var checklist in card.CheckLists)
+                @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
                 {
                     <h5>@checklist.Id - @checklist.Name</h5>
 
                     <ul>
-                        @foreach(var item in checklist.CheckItems)
+                        @foreach (var item in checklist.CheckItems)
                         {
-                            <li>@item.State - @item.Name</li>
+                            if (item.State == Manatee.Trello.CheckItemState.Complete)
+                            {
+                                <li><input type="checkbox" checked="checked" />@item.Name</li>
+                            }
+                            else
+                            {
+                                <li><input type="checkbox"  />@item.Name</li>
+                            }
                         }
                     </ul>
                 }
