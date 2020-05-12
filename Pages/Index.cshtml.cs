@@ -13,7 +13,7 @@ namespace RedLeg.Coaching
 
         private readonly IOptions<TrelloConfiguration> configuration;
 
-        public IDictionary<IBoard, IEnumerable<IList>> Data { get; private set; } = new Dictionary<IBoard, IEnumerable<IList>>();
+        public IDictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>> Data { get; private set; } = new Dictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>();
 
         public IndexModel(ITrelloFactory factory, IOptions<TrelloConfiguration> configuration)
         {
@@ -27,13 +27,26 @@ namespace RedLeg.Coaching
 
             await me.Refresh(force: true);
 
+            //var my_board = new Board(configuration.Value.BoardId);
+
+            //Data.Add(my_board, my_board.Cards.Select(card => card));
+
             foreach (var board in me.Boards)
             {
-                if (board.IsClosed == false)
+                if (board.Id == configuration.Value.BoardId)
                 {
                     await board.Refresh();
 
-                    Data.Add(board, board.Lists.Select(list => list));
+                    var list_data = new Dictionary<IList, IEnumerable<ICard>>();
+
+                    foreach (var list in board.Lists)
+                    {
+                        await list.Refresh();
+
+                        list_data.Add(list, list.Cards.Select(card => card));
+                    }
+
+                    Data.Add(board, list_data);
                 }
             }
         }

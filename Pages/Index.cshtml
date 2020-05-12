@@ -10,11 +10,17 @@
 {
     <div>
         <h2>@board.Key.Id - @board.Key.Name</h2>
-        <ul>
-            @foreach (var list in board.Value)
-            {
-                <li>@list.Id - @list.Name</li>
-            }
-        </ul>
+
+        @foreach (var list in board.Value)
+        {
+            <h3>@list.Key.Id - @list.Key.Name</h3>
+
+            <ul>
+                @foreach (var card in list.Value)
+                {
+                    <li>@card.Id - @card.Name</li>
+                }
+            </ul>
+        }
     </div>
 }
