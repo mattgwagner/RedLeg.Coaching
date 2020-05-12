@@ -43,7 +43,17 @@ namespace RedLeg.Coaching
                     {
                         await list.Refresh();
 
-                        list_data.Add(list, list.Cards.Where(card => card.IsArchived == false).Select(card => card));
+                        var cards = new List<ICard>();
+
+                        foreach (var card in list.Cards)
+                        {
+                            if (card.IsArchived == false)
+                            {
+                                cards.Add(card);
+                            }
+                        }
+
+                        list_data.Add(list, cards);
                     }
 
                     Data.Add(board, list_data);
