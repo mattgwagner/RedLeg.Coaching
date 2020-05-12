@@ -29,7 +29,7 @@ namespace RedLeg.Coaching
 
             foreach (var board in me.Boards)
             {
-                if (board.IsClosed == true)
+                if (board.IsClosed == false)
                 {
                     await board.Refresh();
 
