@@ -56,7 +56,10 @@ namespace RedLeg.Coaching
                             }
                         }
 
-                        list_data.Add(list, cards);
+                        if (cards.Any())
+                        {
+                            list_data.Add(list, cards);
+                        }
                     }
 
                     Data.Add(board, list_data);
