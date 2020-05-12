@@ -29,7 +29,8 @@ namespace RedLeg.Coaching
             TrelloAuthorization.Default.AppKey = Configuration.GetValue<string>("Trello:AppKey");
             TrelloAuthorization.Default.UserToken = Configuration.GetValue<string>("Trello:ApiKey");
 
-            services.AddOptions<TrelloConfiguration>("Trello");
+            services.AddOptions();
+            services.Configure<TrelloConfiguration>(Configuration.GetSection("Trello"));
 
             services
                 .AddRazorPages()
