@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
 
 namespace RedLeg.Coaching
 {
@@ -23,16 +22,11 @@ namespace RedLeg.Coaching
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions<TrelloConfiguration>("Trello");
+
             services.AddRazorPages();
 
-            services.AddSingleton(async (provider) =>
-            {
-                var me = await new TrelloFactory().Me();
-
-                await me.Refresh(force: true);
-
-                return me;
-            });
+            services.AddSingleton<ITrelloFactory, TrelloFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

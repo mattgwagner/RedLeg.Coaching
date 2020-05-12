@@ -1,5 +1,6 @@
 using Manatee.Trello;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,20 +9,25 @@ namespace RedLeg.Coaching
 {
     public class IndexModel : PageModel
     {
-        private readonly Task<IMe> me;
+        private readonly ITrelloFactory factory;
+
+        private readonly IOptions<TrelloConfiguration> configuration;
 
         public IDictionary<IBoard, IEnumerable<IList>> Data { get; private set; } = new Dictionary<IBoard, IEnumerable<IList>>();
 
-        public IndexModel(Task<IMe> me)
+        public IndexModel(ITrelloFactory factory, IOptions<TrelloConfiguration> configuration)
         {
-            this.me = me;
+            this.factory = factory;
+            this.configuration = configuration;
         }
 
         public async Task OnGet()
         {
-            var handle = await me;
+            var me = await factory.Me();
 
-            foreach (var board in handle.Boards)
+            await me.Refresh(force: true);
+
+            foreach (var board in me.Boards)
             {
                 if (board.IsClosed == true)
                 {
