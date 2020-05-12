@@ -1,5 +1,7 @@
 using Manatee.Trello;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RedLeg.Coaching
@@ -8,7 +10,7 @@ namespace RedLeg.Coaching
     {
         private readonly Task<IMe> me;
 
-        public IBoardCollection Boards { get; private set; }
+        public IDictionary<IBoard, IEnumerable<List>> Data { get; private set; } = new Dictionary<IBoard, IEnumerable<List>>();
 
         public IndexModel(Task<IMe> me)
         {
@@ -17,7 +19,15 @@ namespace RedLeg.Coaching
 
         public async Task OnGet()
         {
-            Boards = (await me).Boards;
+            var handle = await me;
+
+            foreach (var board in handle.Boards)
+            {
+                if (board.IsClosed == true)
+                {
+                    Data.Add(board, Enumerable.Empty<List>());
+                }
+            }
         }
     }
 }

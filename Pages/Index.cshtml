@@ -1,20 +1,20 @@
 ﻿@page
 @model RedLeg.Coaching.IndexModel
 
-@if(!Model.Boards.Any())
+@if (!Model.Data.Any())
 {
     <h2>No boards!</h2>
 }
 
-@foreach(var board in Model.Boards)
+@foreach (var board in Model.Data)
 {
-   <div>
-       <h2>@board.Id - @board.Name</h2>
-       <ul>
-           @foreach(var list in board.Lists)
-           {
-               <li>@list.Id - @list.Name</li>
-           }
-       </ul>
-   </div>
+    <div>
+        <h2>@board.Key.Id - @board.Key.Name</h2>
+        <ul>
+            @foreach (var list in board.Value)
+            {
+                <li>@list.Id - @list.Name</li>
+            }
+        </ul>
+    </div>
 }
