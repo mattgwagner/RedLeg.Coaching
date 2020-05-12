@@ -49,7 +49,10 @@ namespace RedLeg.Coaching
                         {
                             if (card.IsArchived == false)
                             {
-                                cards.Add(card);
+                                if (card.Labels.Any(label => label.Name == "One-on-One"))
+                                {
+                                    cards.Add(card);
+                                }
                             }
                         }
 
