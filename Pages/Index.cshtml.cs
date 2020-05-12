@@ -51,6 +51,8 @@ namespace RedLeg.Coaching
                             {
                                 if (card.Labels.Any(label => label.Name == "One-on-One"))
                                 {
+                                    await card.Refresh();
+
                                     cards.Add(card);
                                 }
                             }
