@@ -15,12 +15,24 @@
         {
             <h3>@list.Key.Id - @list.Key.Name</h3>
 
-            <ul>
-                @foreach (var card in list.Value)
+
+            @foreach (var card in list.Value)
+            {
+                <h4>@card.Id - @card.Name</h4>
+
+                @foreach (var checklist in card.CheckLists)
                 {
-                    <li>@card.Id - @card.Name</li>
+                    <h5>@checklist.Id - @checklist.Name</h5>
+
+                    <ul>
+                        @foreach(var item in checklist.CheckItems)
+                        {
+                            <li>@item.State - @item.Name</li>
+                        }
+                    </ul>
                 }
-            </ul>
+            }
+
         }
     </div>
 }
