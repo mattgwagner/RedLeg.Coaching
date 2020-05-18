@@ -35,7 +35,7 @@
                                 <input type="hidden" name="card" value="@card.Id" />
                                 <input type="hidden" name="checklist" value="@checklist.Id" />
                                 <input type="hidden" name="checklistitem" value="@item.Id" />
-                                <input type="hidden" name="isChecked" value="@(is_checked ? "false" : "true") />
+                                <input type="hidden" name="isChecked" value="@(is_checked ? "false" : "true")" />
                                 <input type="checkbox" @(is_checked ? "checked=checked" : "") onchange="this.form.submit()" />
                                 @item.Name
                             </form>
