@@ -15,12 +15,12 @@
     {
         <h2>@checklist.Name</h2>
 
-        <ul>
+        <ul class="list-group">
             @foreach (var item in checklist.CheckItems.OrderBy(i => i.State).ThenBy(i => i.Position))
             {
                 var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
 
-                <li>
+                <li class="list-group-item @(is_checked ? "disabled" : "")">
                     <form method="post" asp-page-handler="ToggleCheck">
                         <input hidden name="checklistitem" value="@item.Id" />
                         <input hidden name="isChecked" value="@(is_checked ? "false" : "true")" />
