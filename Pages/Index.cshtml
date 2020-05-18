@@ -16,7 +16,7 @@
         <h2>@checklist.Name</h2>
 
         <ul>
-            @foreach (var item in checklist.CheckItems)
+            @foreach (var item in checklist.CheckItems.OrderBy(i => i.State).ThenBy(i => i.Position))
             {
                 var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
 
