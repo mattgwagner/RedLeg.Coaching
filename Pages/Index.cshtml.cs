@@ -37,7 +37,7 @@ namespace RedLeg.Coaching
         {
             // Oh god this is ugly
 
-            var data = await GetData();
+            var data = await GetData(board, list, card);
 
             var checklist_reference =
                 data
@@ -60,7 +60,9 @@ namespace RedLeg.Coaching
 
         public async Task<IActionResult> OnPostToggleCheck(string board, string list, string card, string checklist, string checklistitem, Boolean isChecked)
         {
-            var data = await GetData();
+            // Oh god this is ugly
+
+            var data = await GetData(board, list, card);
 
             var checklistitem_reference =
                 data
@@ -83,7 +85,7 @@ namespace RedLeg.Coaching
             return Redirect("/");
         }
 
-        protected async Task<IDictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>> GetData()
+        protected async Task<IDictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>> GetData(string boardId = null, string listId = null, string cardId = null)
         {
             var results = new Dictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>();
 
@@ -95,7 +97,7 @@ namespace RedLeg.Coaching
 
             IsAdmin = string.Equals(me.Email, Email, StringComparison.InvariantCultureIgnoreCase);
 
-            foreach (var board in me.Boards)
+            foreach (var board in me.Boards.Where(b => string.IsNullOrWhiteSpace(boardId) || b.Id == boardId))
             {
                 // Go through each board, but we're only display cards on the configured board of interest
 
@@ -107,13 +109,13 @@ namespace RedLeg.Coaching
 
                     // Go through all of the lists and collect up non-archived cards with the `One-on-One` tag
 
-                    foreach (var list in board.Lists)
+                    foreach (var list in board.Lists.Where(l => string.IsNullOrWhiteSpace(listId) || l.Id == listId))
                     {
                         await list.Refresh();
 
                         var cards = new List<ICard>();
 
-                        foreach (var card in list.Cards)
+                        foreach (var card in list.Cards.Where(c => string.IsNullOrWhiteSpace(cardId) || c.Id == cardId))
                         {
                             if (await Should_Display(card))
                             {
