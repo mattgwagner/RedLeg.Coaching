@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
+using System;
 
 namespace RedLeg.Coaching
 {
@@ -29,6 +30,7 @@ namespace RedLeg.Coaching
                             .Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName)
                             .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
                             .Enrich.WithProperty("Version", $"{typeof(Startup).Assembly.GetName().Version}")
+                            .Enrich.WithProperty("MachineName", Environment.MachineName)
                             .WriteTo.Seq(serverUrl: context.Configuration.GetValue<string>("Seq:Endpoint"), apiKey: context.Configuration.GetValue<string>("Seq:ApiKey"), compact: true, controlLevelSwitch: LogLevel)
                             .MinimumLevel.ControlledBy(LogLevel)
                             .CreateLogger();
