@@ -26,6 +26,7 @@
                 <ul>
                     @foreach (var item in checklist.CheckItems)
                     {
+                        var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
 
                         <li>
                             <form method="post" asp-page-handler="ToggleCheck">
@@ -34,7 +35,8 @@
                                 <input type="hidden" name="card" value="@card.Id" />
                                 <input type="hidden" name="checklist" value="@checklist.Id" />
                                 <input type="hidden" name="checklistitem" value="@item.Id" />
-                                <input type="checkbox" name="isChecked" @(item.State == Manatee.Trello.CheckItemState.Complete ? "checked=checked" : "") onchange="this.form.submit()" />
+                                <input type="hidden" name="isChecked" value="@(!is_checked)" />
+                                <input type="checkbox" @(is_checked ? "checked=checked" : "") value="" onchange="this.form.submit()" />
                                 @item.Name
                             </form>
                         </li>
