@@ -34,7 +34,7 @@
                                 <input type="hidden" name="card" value="@card.Id" />
                                 <input type="hidden" name="checklist" value="@checklist.Id" />
                                 <input type="hidden" name="checklistitem" value="@item.Id" />
-                                <input type="checkbox" name="isChecked" checked="@(item.State == Manatee.Trello.CheckItemState.Complete ? "checked" : "")" onchange="this.form.submit()" />
+                                <input type="checkbox" name="isChecked" @(item.State == Manatee.Trello.CheckItemState.Complete ? "checked=checked" : "") onchange="this.form.submit()" />
                                 @item.Name
                             </form>
                         </li>
