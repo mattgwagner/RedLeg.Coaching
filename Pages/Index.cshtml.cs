@@ -122,9 +122,7 @@ namespace RedLeg.Coaching
 
             if (IsAdmin) return true;
 
-            var custom_field = card.CustomFields.FirstOrDefault() as CustomField<string>;
-
-            if (custom_field != null)
+            if (card.CustomFields.FirstOrDefault() is CustomField<string> custom_field)
             {
                 return string.Equals(Email, custom_field.Value, StringComparison.InvariantCultureIgnoreCase);
             }
