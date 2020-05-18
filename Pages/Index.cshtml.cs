@@ -107,10 +107,10 @@ namespace RedLeg.Coaching
 
                     // Go through all of the lists and collect up non-archived cards with the `One-on-One` tag
 
+                    await Task.WhenAll(board.Lists.Select(list => list.Refresh()));
+
                     foreach (var list in board.Lists)
                     {
-                        await list.Refresh();
-
                         var cards = new List<ICard>();
 
                         foreach (var card in list.Cards)
