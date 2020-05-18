@@ -1,4 +1,5 @@
 using Manatee.Trello;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using System;
@@ -27,28 +28,65 @@ namespace RedLeg.Coaching
             this.configuration = configuration;
         }
 
-        protected async Task<Boolean> Should_Display(ICard card)
-        {
-            if (card.IsArchived == true) return false;
-
-            if (!card.Labels.Any(label => label.Name == "One-on-One")) return false;
-
-            await card.Refresh();
-
-            if (IsAdmin) return true;
-
-            var custom_field = card.CustomFields.FirstOrDefault() as CustomField<string>;
-
-            if (custom_field != null)
-            {
-                return string.Equals(Email, custom_field.Value, StringComparison.InvariantCultureIgnoreCase);
-            }
-
-            return false;
-        }
-
         public async Task OnGet()
         {
+            Data = await GetData();
+        }
+
+        public async Task<IActionResult> OnPostAddItem(string board, string list, string card, string checklist, string text)
+        {
+            // Oh god this is ugly
+
+            var data = await GetData();
+
+            var checklist_reference =
+                data
+                .Where(b => b.Key.Id == board)
+                .SelectMany(b => b.Value)
+                .Where(l => l.Key.Id == list)
+                .SelectMany(l => l.Value)
+                .Where(c => c.Id == card)
+                .SelectMany(c => c.CheckLists)
+                .Where(cl => cl.Id == checklist)
+                .SingleOrDefault();
+
+            if (checklist_reference != null)
+            {
+                await checklist_reference.CheckItems.Add(text);
+            }
+
+            return Redirect("/");
+        }
+
+        public async Task<IActionResult> OnPostToggleCheck(string board, string list, string card, string checklist, string checklistitem, Boolean isChecked)
+        {
+            var data = await GetData();
+
+            var checklistitem_reference =
+                data
+                .Where(b => b.Key.Id == board)
+                .SelectMany(b => b.Value)
+                .Where(l => l.Key.Id == list)
+                .SelectMany(l => l.Value)
+                .Where(c => c.Id == card)
+                .SelectMany(c => c.CheckLists)
+                .Where(cl => cl.Id == checklist)
+                .SelectMany(cli => cli.CheckItems)
+                .Where(cli => cli.Id == checklistitem)
+                .SingleOrDefault();
+
+            if (checklistitem_reference != null)
+            {
+                checklistitem_reference.State = isChecked ? CheckItemState.Complete : CheckItemState.Incomplete;
+            }
+
+            return Redirect("/");
+        }
+
+        protected async Task<IDictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>> GetData()
+        {
+            var results = new Dictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>();
+
             var me = await factory.Me();
 
             await me.Refresh(force: true);
@@ -89,9 +127,31 @@ namespace RedLeg.Coaching
                         }
                     }
 
-                    Data.Add(board, list_data);
+                    results.Add(board, list_data);
                 }
             }
+
+            return results;
+        }
+
+        protected async Task<Boolean> Should_Display(ICard card)
+        {
+            if (card.IsArchived == true) return false;
+
+            if (!card.Labels.Any(label => label.Name == "One-on-One")) return false;
+
+            await card.Refresh();
+
+            if (IsAdmin) return true;
+
+            var custom_field = card.CustomFields.FirstOrDefault() as CustomField<string>;
+
+            if (custom_field != null)
+            {
+                return string.Equals(Email, custom_field.Value, StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            return false;
         }
     }
 }

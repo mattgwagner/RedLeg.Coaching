@@ -9,38 +9,49 @@
 
 @foreach (var board in Model.Data)
 {
-    <div>
-        <h2>@board.Key.Id - @board.Key.Name</h2>
+    <h2>@board.Key.Id - @board.Key.Name</h2>
 
-        @foreach (var list in board.Value)
+    @foreach (var list in board.Value)
+    {
+        <h3>@list.Key.Id - @list.Key.Name</h3>
+
+        @foreach (var card in list.Value)
         {
-            <h3>@list.Key.Id - @list.Key.Name</h3>
+            <h4>@card.Id - @card.Name</h4>
 
-
-            @foreach (var card in list.Value)
+            @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
             {
-                <h4>@card.Id - @card.Name</h4>
+                <h5>@checklist.Id - @checklist.Name</h5>
 
-                @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
-                {
-                    <h5>@checklist.Id - @checklist.Name</h5>
+                <ul>
+                    @foreach (var item in checklist.CheckItems)
+                    {
 
-                    <ul>
-                        @foreach (var item in checklist.CheckItems)
-                        {
-                            if (item.State == Manatee.Trello.CheckItemState.Complete)
-                            {
-                                <li><input type="checkbox" checked="checked" />@item.Name</li>
-                            }
-                            else
-                            {
-                                <li><input type="checkbox"  />@item.Name</li>
-                            }
-                        }
-                    </ul>
-                }
+                        <li>
+                            <form method="post" asp-page-handler="ToggleCheck">
+                                <input type="hidden" name="board" value="@board.Key.Id" />
+                                <input type="hidden" name="list" value="@list.Key.Id" />
+                                <input type="hidden" name="card" value="@card.Id" />
+                                <input type="hidden" name="checklist" value="@checklist.Id" />
+                                <input type="hidden" name="checklistitem" value="@item.Id" />
+                                <input type="checkbox" name="isChecked" checked="@(item.State == Manatee.Trello.CheckItemState.Complete ? "checked" : "")" onchange="this.form.submit()" />
+                                @item.Name
+                            </form>
+                        </li>
+                    }
+
+                    <li>
+                        <form method="post" asp-page-handler="AddItem">
+                            <input type="hidden" name="board" value="@board.Key.Id" />
+                            <input type="hidden" name="list" value="@list.Key.Id" />
+                            <input type="hidden" name="card" value="@card.Id" />
+                            <input type="hidden" name="checklist" value="@checklist.Id" />
+                            <input name="text" type="text" />
+                            <button type="submit">Add</button>
+                        </form>
+                    </li>
+                </ul>
             }
-
         }
-    </div>
+    }
 }
