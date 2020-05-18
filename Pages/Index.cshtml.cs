@@ -20,7 +20,7 @@ namespace RedLeg.Coaching
 
         public Boolean IsAdmin { get; private set; }
 
-        public IDictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>> Data { get; private set; } = new Dictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>();
+        public ICollection<ICard> Cards { get; private set; }
 
         public IndexModel(ITrelloFactory factory, IOptions<TrelloConfiguration> configuration)
         {
@@ -30,22 +30,15 @@ namespace RedLeg.Coaching
 
         public async Task OnGet()
         {
-            Data = await GetData();
+            Cards = await GetData();
         }
 
-        public async Task<IActionResult> OnPostAddItem(string board, string list, string card, string checklist, string text)
+        public async Task<IActionResult> OnPostAddItem(string checklist, string text)
         {
-            // Oh god this is ugly
-
             var data = await GetData();
 
             var checklist_reference =
                 data
-                .Where(b => b.Key.Id == board)
-                .SelectMany(b => b.Value)
-                .Where(l => l.Key.Id == list)
-                .SelectMany(l => l.Value)
-                .Where(c => c.Id == card)
                 .SelectMany(c => c.CheckLists)
                 .Where(cl => cl.Id == checklist)
                 .SingleOrDefault();
@@ -58,19 +51,13 @@ namespace RedLeg.Coaching
             return Redirect("/");
         }
 
-        public async Task<IActionResult> OnPostToggleCheck(string board, string list, string card, string checklist, string checklistitem, Boolean isChecked)
+        public async Task<IActionResult> OnPostToggleCheck(string checklistitem, Boolean isChecked)
         {
             var data = await GetData();
 
             var checklistitem_reference =
                 data
-                .Where(b => b.Key.Id == board)
-                .SelectMany(b => b.Value)
-                .Where(l => l.Key.Id == list)
-                .SelectMany(l => l.Value)
-                .Where(c => c.Id == card)
                 .SelectMany(c => c.CheckLists)
-                .Where(cl => cl.Id == checklist)
                 .SelectMany(cli => cli.CheckItems)
                 .Where(cli => cli.Id == checklistitem)
                 .SingleOrDefault();
@@ -83,9 +70,9 @@ namespace RedLeg.Coaching
             return Redirect("/");
         }
 
-        protected async Task<IDictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>> GetData()
+        protected async Task<IList<ICard>> GetData()
         {
-            var results = new Dictionary<IBoard, IDictionary<IList, IEnumerable<ICard>>>();
+            var results = new List<ICard>();
 
             var me = await factory.Me();
 
@@ -111,23 +98,14 @@ namespace RedLeg.Coaching
 
                     foreach (var list in board.Lists)
                     {
-                        var cards = new List<ICard>();
-
                         foreach (var card in list.Cards)
                         {
                             if (await Should_Display(card))
                             {
-                                cards.Add(card);
+                                results.Add(card);
                             }
                         }
-
-                        if (cards.Any())
-                        {
-                            list_data.Add(list, cards);
-                        }
                     }
-
-                    results.Add(board, list_data);
                 }
             }
 

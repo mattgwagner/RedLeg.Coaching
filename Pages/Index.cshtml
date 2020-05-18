@@ -1,59 +1,42 @@
 ﻿@page
 @model RedLeg.Coaching.IndexModel
 
-@if (!Model.Data.Any())
+@if (!Model.Cards.Any())
 {
     <h2>No One-on-Ones found, contact your Mentor to configure access.</h2>
     <h4>Authenticated Email: @Model.Email</h4>
-} 
+}
 
-@foreach (var board in Model.Data)
+@foreach (var card in Model.Cards)
 {
-    <h1>@board.Key.Name</h1>
+    <h1>@card.Board.Name - @card.Name</h1>
 
-    @foreach (var list in board.Value)
+    @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
     {
-        <h2>@list.Key.Name</h2>
+        <h2>@checklist.Name</h2>
 
-        @foreach (var card in list.Value)
-        {
-            <h3>@card.Name</h3>
-
-            @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
+        <ul>
+            @foreach (var item in checklist.CheckItems)
             {
-                <h4>@checklist.Name</h4>
+                var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
 
-                <ul>
-                    @foreach (var item in checklist.CheckItems)
-                    {
-                        var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
-
-                        <li>
-                            <form method="post" asp-page-handler="ToggleCheck">
-                                <input type="hidden" name="board" value="@board.Key.Id" />
-                                <input type="hidden" name="list" value="@list.Key.Id" />
-                                <input type="hidden" name="card" value="@card.Id" />
-                                <input type="hidden" name="checklist" value="@checklist.Id" />
-                                <input type="hidden" name="checklistitem" value="@item.Id" />
-                                <input type="hidden" name="isChecked" value="@(is_checked ? "false" : "true")" />
-                                <input type="checkbox" @(is_checked ? "checked=checked" : "") onchange="this.form.submit()" />
-                                @item.Name
-                            </form>
-                        </li>
-                    }
-
-                    <li>
-                        <form method="post" asp-page-handler="AddItem">
-                            <input type="hidden" name="board" value="@board.Key.Id" />
-                            <input type="hidden" name="list" value="@list.Key.Id" />
-                            <input type="hidden" name="card" value="@card.Id" />
-                            <input type="hidden" name="checklist" value="@checklist.Id" />
-                            <input name="text" type="text" />
-                            <button type="submit">Add</button>
-                        </form>
-                    </li>
-                </ul>
+                <li>
+                    <form method="post" asp-page-handler="ToggleCheck">
+                        <input type="hidden" name="checklistitem" value="@item.Id" />
+                        <input type="hidden" name="isChecked" value="@(is_checked ? "false" : "true")" />
+                        <input type="checkbox" @(is_checked ? "checked=checked" : "") onchange="this.form.submit()" />
+                        @item.Name
+                    </form>
+                </li>
             }
-        }
+
+            <li>
+                <form method="post" asp-page-handler="AddItem">
+                    <input type="hidden" name="checklist" value="@checklist.Id" />
+                    <input name="text" type="text" />
+                    <button type="submit">Add</button>
+                </form>
+            </li>
+        </ul>
     }
 }
