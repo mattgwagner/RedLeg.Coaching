@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Serilog.Context;
+using System.Security.Claims;
 
 namespace RedLeg.Coaching
 {
@@ -87,6 +89,14 @@ namespace RedLeg.Coaching
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                using (LogContext.PushProperty("Username", context.User?.FindFirstValue(ClaimTypes.Email)))
+                {
+                    await next();
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {
