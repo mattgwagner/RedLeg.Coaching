@@ -9,19 +9,19 @@
 
 @foreach (var board in Model.Data)
 {
-    <h2>@board.Key.Id - @board.Key.Name</h2>
+    <h1>@board.Key.Name</h1>
 
     @foreach (var list in board.Value)
     {
-        <h3>@list.Key.Id - @list.Key.Name</h3>
+        <h2>@list.Key.Name</h2>
 
         @foreach (var card in list.Value)
         {
-            <h4>@card.Id - @card.Name</h4>
+            <h3>@card.Name</h3>
 
             @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
             {
-                <h5>@checklist.Id - @checklist.Name</h5>
+                <h4>@checklist.Name</h4>
 
                 <ul>
                     @foreach (var item in checklist.CheckItems)
