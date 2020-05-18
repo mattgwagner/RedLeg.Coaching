@@ -22,6 +22,7 @@
 
                 <li class="list-group-item @(is_checked ? "disabled" : "")">
                     <form method="post" asp-page-handler="ToggleCheck">
+                        <input hidden name="cardId" value="@card.Id" />
                         <input hidden name="checklistitem" value="@item.Id" />
                         <input hidden name="isChecked" value="@(is_checked ? "false" : "true")" />
                         <input type="checkbox" @(is_checked ? "checked=checked" : "") onchange="this.form.submit()" />
@@ -32,6 +33,7 @@
 
             <li>
                 <form method="post" asp-page-handler="AddItem">
+                    <input hidden name="cardId" value="@card.Id" />
                     <input hidden name="checklist" value="@checklist.Id" />
                     <input name="text" type="text" />
                     <button type="submit" class="btn btn-info btn-xs">Add</button>

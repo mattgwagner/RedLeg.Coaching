@@ -33,13 +33,15 @@ namespace RedLeg.Coaching
             Cards = await GetData();
         }
 
-        public async Task<IActionResult> OnPostAddItem(string checklist, string text)
+        public async Task<IActionResult> OnPostAddItem(string cardId, string checklist, string text)
         {
-            var data = await GetData();
+            var card = factory.Card(cardId);
+
+            await card.Refresh();
 
             var checklist_reference =
-                data
-                .SelectMany(c => c.CheckLists)
+                card
+                .CheckLists
                 .Where(cl => cl.Id == checklist)
                 .SingleOrDefault();
 
@@ -51,13 +53,15 @@ namespace RedLeg.Coaching
             return Redirect("/");
         }
 
-        public async Task<IActionResult> OnPostToggleCheck(string checklistitem, Boolean isChecked)
+        public async Task<IActionResult> OnPostToggleCheck(string cardId, string checklistitem, Boolean isChecked)
         {
-            var data = await GetData();
+            var card = factory.Card(cardId);
+
+            await card.Refresh();
 
             var checklistitem_reference =
-                data
-                .SelectMany(c => c.CheckLists)
+                card
+                .CheckLists
                 .SelectMany(cli => cli.CheckItems)
                 .Where(cli => cli.Id == checklistitem)
                 .SingleOrDefault();
