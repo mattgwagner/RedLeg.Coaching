@@ -16,9 +16,9 @@
     }
 </ul>
 
-@foreach (var card in Model.Cards)
-{
-    <div class="tab-content">
+<div class="tab-content">
+    @foreach (var card in Model.Cards)
+    {
         <div class="tab-pane fade show active" id="@card.Id">
             @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
             {
@@ -53,6 +53,5 @@
 
             }
         </div>
-    </div>
-
-}
+    }
+</div>
