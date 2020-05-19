@@ -7,23 +7,23 @@
     <h4>Authenticated Email: @Model.Email</h4>
 }
 
+@{ 
+    var first = Model.Cards.Select(card => card.Id).FirstOrDefault();
+}
+
 <ul class="nav nav-tabs" role="tablist">
     @foreach (var card in Model.Cards)
     {
         <li class="nav-item">
-            <a class="nav-link" href="#@card.Id" role="tab">@card.Board.Name - @card.Name</a>
+            <a class="nav-link @(card.Id == first ? "active" : "")" href="#@card.Id" role="tab">@card.Board.Name - @card.Name</a>
         </li>
     }
 </ul>
 
 <div class="tab-content">
-    @{ 
-        var first = true;
-    }
-
     @foreach (var card in Model.Cards)
     {
-        <div class="tab-pane fade @(first ? "show active" : "")" id="@card.Id" role="tabpanel">
+        <div class="tab-pane fade @(card.Id == first ? "show active" : "")" id="@card.Id" role="tabpanel">
             @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
             {
                 <h2>@checklist.Name</h2>
@@ -53,10 +53,6 @@
                         </form>
                     </li>
                 </ul>
-
-                @{ 
-                    first = false;
-                }
             }
         </div>
     }
