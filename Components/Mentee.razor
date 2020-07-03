@@ -12,7 +12,7 @@
                 var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
 
                 <li class="list-group-item">
-                    <input type="checkbox" @onchange="@((eventArgs) => OnPostToggleCheck(item.Id, eventArgs.Value))" value="@is_checked" />
+                    <input type="checkbox" @onchange="@((eventArgs) => OnPostToggleCheck(item.Id, eventArgs.Value))"/>
                     @if (is_checked)
                     {
                         <del>@item.Name</del>
