@@ -4,7 +4,7 @@
 
     @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
     {
-        <Checklist Id="@checklist.Id" />
+        <Checklist Data="@checklist" />
     }
 }
 else

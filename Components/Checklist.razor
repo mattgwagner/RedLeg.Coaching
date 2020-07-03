@@ -1,9 +1,9 @@
-﻿@if (checklist != null)
+﻿@if (Data != null)
 {
-    <h2>@checklist.Name</h2>
+    <h2>@Data.Name</h2>
 
     <ul class="list-group">
-        @foreach (var item in checklist.CheckItems.OrderBy(i => i.State).ThenBy(i => i.Position))
+        @foreach (var item in Data.CheckItems.OrderBy(i => i.State).ThenBy(i => i.Position))
         {
             var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
 
@@ -28,35 +28,24 @@
 }
 
 @code {
-    [Parameter]
-    public string Id { get; set; }
-
     private string Text { get; set; }
 
-    private Manatee.Trello.ICheckList checklist { get; set; }
-
-    protected override Task OnInitializedAsync()
-    {
-        checklist = new Manatee.Trello.CheckList(Id);
-
-        return Task.CompletedTask;
-
-        // return checklist.Refresh();
-    }
+    [Parameter]
+    public Manatee.Trello.ICheckList Data { get; set; }
 
     protected async Task OnPostAddItem()
     {
-        await checklist.CheckItems.Add(Text);
+        await Data.CheckItems.Add(Text);
 
         Text = string.Empty;
 
-        await checklist.Refresh();
+        await Data.Refresh();
     }
 
     protected Task OnPostToggleCheck(string checklistitem, object isChecked)
     {
         var checklistitem_reference =
-            checklist
+            Data
             .CheckItems
             .Where(cli => cli.Id == checklistitem)
             .SingleOrDefault();
@@ -66,6 +55,6 @@
             checklistitem_reference.State = (Boolean)isChecked ? Manatee.Trello.CheckItemState.Complete : Manatee.Trello.CheckItemState.Incomplete;
         }
 
-        return checklist.Refresh();
+        return Data.Refresh();
     }
 }
