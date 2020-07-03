@@ -4,31 +4,7 @@
 
     @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
     {
-        <h2>@checklist.Name</h2>
-
-        <ul class="list-group">
-            @foreach (var item in checklist.CheckItems.OrderBy(i => i.State).ThenBy(i => i.Position))
-            {
-                var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
-
-                <li class="list-group-item">
-                    <input type="checkbox" @onchange="@((eventArgs) => OnPostToggleCheck(item.Id, eventArgs.Value))"/>
-                    @if (is_checked)
-                    {
-                        <del>@item.Name</del>
-                    }
-                    else
-                    {
-                        @item.Name
-                    }
-                </li>
-            }
-
-            <li>
-                <input name="text" type="text" @bind-value="Text" />
-                <button type="submit" class="btn btn-info btn-xs" @onclick="@(() => OnPostAddItem(checklist.Id))">Add</button>
-            </li>
-        </ul>
+        <Checklist Id="@checklist.Id" />
     }
 }
 else
@@ -40,48 +16,11 @@ else
     [Parameter]
     public string Id { get; set; }
 
-    private string Text { get; set; }
-
     private Manatee.Trello.ICard card { get; set; }
 
     protected override Task OnInitializedAsync()
     {
         card = new Manatee.Trello.Card(Id);
-
-        return card.Refresh();
-    }
-
-    protected async Task OnPostAddItem(string checklist)
-    {
-        var checklist_reference =
-            card
-            .CheckLists
-            .Where(cl => cl.Id == checklist)
-            .SingleOrDefault();
-
-        if (checklist_reference != null)
-        {
-            await checklist_reference.CheckItems.Add(Text);
-        }
-
-        Text = string.Empty;
-
-        await card.Refresh();
-    }
-
-    protected Task OnPostToggleCheck(string checklistitem, object isChecked)
-    {
-        var checklistitem_reference =
-            card
-            .CheckLists
-            .SelectMany(cli => cli.CheckItems)
-            .Where(cli => cli.Id == checklistitem)
-            .SingleOrDefault();
-
-        if (checklistitem_reference != null)
-        {
-            checklistitem_reference.State = (Boolean)isChecked ? Manatee.Trello.CheckItemState.Complete : Manatee.Trello.CheckItemState.Incomplete;
-        }
 
         return card.Refresh();
     }

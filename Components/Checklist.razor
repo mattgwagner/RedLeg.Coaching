@@ -1,0 +1,71 @@
+﻿@if (checklist != null)
+{
+    <h2>@checklist.Name</h2>
+
+    <ul class="list-group">
+        @foreach (var item in checklist.CheckItems.OrderBy(i => i.State).ThenBy(i => i.Position))
+        {
+            var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
+
+            <li class="list-group-item">
+                <input type="checkbox" @onchange="@((eventArgs) => OnPostToggleCheck(item.Id, eventArgs.Value))" />
+                @if (is_checked)
+                {
+                    <del>@item.Name</del>
+                }
+                else
+                {
+                    @item.Name
+                }
+            </li>
+        }
+
+        <li>
+            <input name="text" type="text" @bind-value="Text" />
+            <button type="submit" class="btn btn-info btn-xs" @onclick="@OnPostAddItem">Add</button>
+        </li>
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private string Text { get; set; }
+
+    private Manatee.Trello.ICheckList checklist { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        checklist = new Manatee.Trello.CheckList(Id);
+
+        return Task.CompletedTask;
+
+        // return checklist.Refresh();
+    }
+
+    protected async Task OnPostAddItem()
+    {
+        await checklist.CheckItems.Add(Text);
+
+        Text = string.Empty;
+
+        await checklist.Refresh();
+    }
+
+    protected Task OnPostToggleCheck(string checklistitem, object isChecked)
+    {
+        var checklistitem_reference =
+            checklist
+            .CheckItems
+            .Where(cli => cli.Id == checklistitem)
+            .SingleOrDefault();
+
+        if (checklistitem_reference != null)
+        {
+            checklistitem_reference.State = (Boolean)isChecked ? Manatee.Trello.CheckItemState.Complete : Manatee.Trello.CheckItemState.Incomplete;
+        }
+
+        return checklist.Refresh();
+    }
+}
