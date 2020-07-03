@@ -29,11 +29,6 @@ namespace RedLeg.Coaching
 
         public async Task OnGet()
         {
-            Cards = await GetData();
-        }
-
-        protected async Task<IList<ICard>> GetData()
-        {
             var results = new List<ICard>();
 
             var me = await factory.Me();
@@ -71,7 +66,7 @@ namespace RedLeg.Coaching
                 }
             }
 
-            return results;
+            Cards = results;
         }
 
         protected async Task<Boolean> Should_Display(ICard card)
