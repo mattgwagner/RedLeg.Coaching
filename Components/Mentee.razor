@@ -12,7 +12,7 @@
                 var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
 
                 <li class="list-group-item @(is_checked ? "disabled" : "")">
-                    <input type="checkbox" @(is_checked ? "checked=checked" : "" ) @onchange="@(() => OnPostToggleCheck(item.Id, !is_checked))" />
+                    <input type="checkbox" checked="@(is_checked ? "checked" : "" )" @onchange="@((eventArgs) => OnPostToggleCheck(item.Id, eventArgs.Value))" />
                     @item.Name
                 </li>
             }
@@ -64,7 +64,7 @@ else
         await ReloadCard();
     }
 
-    protected async Task OnPostToggleCheck(string checklistitem, Boolean isChecked)
+    protected async Task OnPostToggleCheck(string checklistitem, object isChecked)
     {
         var checklistitem_reference =
             card
@@ -75,7 +75,7 @@ else
 
         if (checklistitem_reference != null)
         {
-            checklistitem_reference.State = isChecked ? Manatee.Trello.CheckItemState.Complete : Manatee.Trello.CheckItemState.Incomplete;
+            checklistitem_reference.State = (Boolean)isChecked ? Manatee.Trello.CheckItemState.Complete : Manatee.Trello.CheckItemState.Incomplete;
         }
 
         await ReloadCard();
