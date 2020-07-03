@@ -37,14 +37,12 @@ else
 
     private Manatee.Trello.ICard card { get; set; }
 
-    protected async Task ReloadCard()
+    protected override Task OnInitializedAsync()
     {
         card = new Manatee.Trello.Card(Id);
 
-        await card.Refresh();
+        return card.Refresh();
     }
-
-    protected override Task OnInitializedAsync() => ReloadCard();
 
     protected async Task OnPostAddItem(string checklist)
     {
@@ -61,10 +59,10 @@ else
 
         Text = string.Empty;
 
-        await ReloadCard();
+        await card.Refresh();
     }
 
-    protected async Task OnPostToggleCheck(string checklistitem, object isChecked)
+    protected Task OnPostToggleCheck(string checklistitem, object isChecked)
     {
         var checklistitem_reference =
             card
@@ -78,6 +76,6 @@ else
             checklistitem_reference.State = (Boolean)isChecked ? Manatee.Trello.CheckItemState.Complete : Manatee.Trello.CheckItemState.Incomplete;
         }
 
-        await ReloadCard();
+        return card.Refresh();
     }
 }
