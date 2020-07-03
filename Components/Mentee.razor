@@ -13,7 +13,14 @@
 
                 <li class="list-group-item @(is_checked ? "disabled" : "")">
                     <input type="checkbox" @onchange="@((eventArgs) => OnPostToggleCheck(item.Id, eventArgs.Value))" value="@is_checked" />
-                    @item.Name
+                    @if (is_checked)
+                    {
+                        <del>@item.Name</del>
+                    }
+                    else
+                    {
+                        @item.Name
+                    }
                 </li>
             }
 
