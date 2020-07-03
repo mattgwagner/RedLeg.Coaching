@@ -9,36 +9,5 @@
 
 @foreach (var card in Model.Cards)
 {
-    <h1>@card.Board.Name - @card.Name</h1>
-
-    @foreach (var checklist in card.CheckLists.OrderByDescending(_ => _.Name))
-    {
-        <h2>@checklist.Name</h2>
-
-        <ul class="list-group">
-            @foreach (var item in checklist.CheckItems.OrderBy(i => i.State).ThenBy(i => i.Position))
-            {
-                var is_checked = item.State == Manatee.Trello.CheckItemState.Complete;
-
-                <li class="list-group-item @(is_checked ? "disabled" : "")">
-                    <form method="post" asp-page-handler="ToggleCheck">
-                        <input hidden name="cardId" value="@card.Id" />
-                        <input hidden name="checklistitem" value="@item.Id" />
-                        <input hidden name="isChecked" value="@(is_checked ? "false" : "true")" />
-                        <input type="checkbox" @(is_checked ? "checked=checked" : "") onchange="this.form.submit()" />
-                        @item.Name
-                    </form>
-                </li>
-            }
-
-            <li>
-                <form method="post" asp-page-handler="AddItem">
-                    <input hidden name="cardId" value="@card.Id" />
-                    <input hidden name="checklist" value="@checklist.Id" />
-                    <input name="text" type="text" />
-                    <button type="submit" class="btn btn-info btn-xs">Add</button>
-                </form>
-            </li>
-        </ul>
-    }
+    <component type="typeof(RedLeg.Coaching.Components.Mentee)" param-Id="@card.Id" render-mode="Server" />
 }

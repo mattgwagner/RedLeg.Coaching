@@ -75,6 +75,8 @@ namespace RedLeg.Coaching
                     // Configure the Claims Issuer to be Auth0
                     options.ClaimsIssuer = "Auth0";
                 });
+
+            services.AddServerSideBlazor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,6 +88,8 @@ namespace RedLeg.Coaching
             }
 
             app.UseRouting();
+
+            app.UseStaticFiles();
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -100,6 +104,7 @@ namespace RedLeg.Coaching
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapBlazorHub();
                 endpoints.MapRazorPages();
             });
         }
