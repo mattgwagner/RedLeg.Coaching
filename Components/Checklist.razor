@@ -35,7 +35,7 @@
 
     protected async Task OnPostAddItem()
     {
-        await Data.CheckItems.Add(Text);
+        await Data.CheckItems.Add($"(1v1) {Text}");
 
         Text = string.Empty;
 
