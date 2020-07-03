@@ -1,5 +1,4 @@
 using Manatee.Trello;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using System;
@@ -31,47 +30,6 @@ namespace RedLeg.Coaching
         public async Task OnGet()
         {
             Cards = await GetData();
-        }
-
-        public async Task<IActionResult> OnPostAddItem(string cardId, string checklist, string text)
-        {
-            var card = factory.Card(cardId);
-
-            await card.Refresh();
-
-            var checklist_reference =
-                card
-                .CheckLists
-                .Where(cl => cl.Id == checklist)
-                .SingleOrDefault();
-
-            if (checklist_reference != null)
-            {
-                await checklist_reference.CheckItems.Add(text);
-            }
-
-            return Redirect("/");
-        }
-
-        public async Task<IActionResult> OnPostToggleCheck(string cardId, string checklistitem, Boolean isChecked)
-        {
-            var card = factory.Card(cardId);
-
-            await card.Refresh();
-
-            var checklistitem_reference =
-                card
-                .CheckLists
-                .SelectMany(cli => cli.CheckItems)
-                .Where(cli => cli.Id == checklistitem)
-                .SingleOrDefault();
-
-            if (checklistitem_reference != null)
-            {
-                checklistitem_reference.State = isChecked ? CheckItemState.Complete : CheckItemState.Incomplete;
-            }
-
-            return Redirect("/");
         }
 
         protected async Task<IList<ICard>> GetData()

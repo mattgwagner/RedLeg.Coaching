@@ -23,12 +23,9 @@
             }
 
             <li>
-                <form method="post" asp-page-handler="AddItem">
-                    <input hidden name="cardId" value="@card.Id" />
-                    <input hidden name="checklist" value="@checklist.Id" />
-                    <input name="text" type="text" />
-                    <button type="submit" class="btn btn-info btn-xs">Add</button>
-                </form>
+                <input hidden name="checklist" value="@checklist.Id" />
+                <input name="text" type="text" @bind-value="Text" />
+                <button type="submit" class="btn btn-info btn-xs" @onclick="@(() => OnPostAddItem(checklist.Id))">Add</button>
             </li>
         </ul>
     }
@@ -42,12 +39,49 @@ else
     [Parameter]
     public string Id { get; set; }
 
+    private string Text { get; set; }
+
     private Manatee.Trello.ICard card { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected async Task ReloadCard()
     {
         card = new Manatee.Trello.Card(Id);
 
         await card.Refresh();
+    }
+
+    protected override Task OnInitializedAsync() => ReloadCard();
+
+    protected async Task OnPostAddItem(string checklist)
+    {
+        var checklist_reference =
+            card
+            .CheckLists
+            .Where(cl => cl.Id == checklist)
+            .SingleOrDefault();
+
+        if (checklist_reference != null)
+        {
+            await checklist_reference.CheckItems.Add(Text);
+        }
+
+        await ReloadCard();
+    }
+
+    protected async Task OnPostToggleCheck(string checklistitem, Boolean isChecked)
+    {
+        var checklistitem_reference =
+            card
+            .CheckLists
+            .SelectMany(cli => cli.CheckItems)
+            .Where(cli => cli.Id == checklistitem)
+            .SingleOrDefault();
+
+        if (checklistitem_reference != null)
+        {
+            checklistitem_reference.State = isChecked ? Manatee.Trello.CheckItemState.Complete : Manatee.Trello.CheckItemState.Incomplete;
+        }
+
+        await ReloadCard();
     }
 }
