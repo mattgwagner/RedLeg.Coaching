@@ -31,7 +31,7 @@ namespace RedLeg.Coaching
                             .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
                             .Enrich.WithProperty("Version", $"{typeof(Startup).Assembly.GetName().Version}")
                             .Enrich.WithProperty("MachineName", Environment.MachineName)
-                            .WriteTo.Seq(serverUrl: context.Configuration.GetValue<string>("Seq:Endpoint"), apiKey: context.Configuration.GetValue<string>("Seq:ApiKey"), compact: true, controlLevelSwitch: LogLevel)
+                            .WriteTo.Seq(serverUrl: context.Configuration.GetValue<string>("Seq:Endpoint"), apiKey: context.Configuration.GetValue<string>("Seq:ApiKey"), controlLevelSwitch: LogLevel)
                             .MinimumLevel.ControlledBy(LogLevel)
                             .CreateLogger();
 
